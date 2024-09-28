@@ -9,5 +9,9 @@ export default {
 
   fetchMovieById(movieId: number): Promise<AxiosResponse | AxiosError>  {
     return axios.get(`${config.api.baseUrl}/movie/${movieId}?api_key=${config.api.apiKey}`)
-  }
+  },
+
+  fetchMovieByName(currentPage: number, movieName: string) : Promise<AxiosResponse | AxiosError>  {
+    return axios.get(`${config.api.baseUrl}/search/movie?query=${movieName}&include_adult=false&page=${currentPage}&api_key=${config.api.apiKey}`)
+  },
 }

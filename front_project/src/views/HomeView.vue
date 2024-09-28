@@ -8,17 +8,23 @@ import BaseCardMovie from '../components/BaseCardMovie.vue'
 import BaseTabsMovie from '../components/BaseTabsMovie.vue'
 
 const genreId = ref<string>('')
+const searchName = ref<string>('')
+const searchMode = ref<boolean>(false)
 const listMoviesByGenre = ref<TMovie[]>([])
 const isLoading = ref<boolean>(false)
 const currentPage = ref<number>(1)
 
-const getMovies = async(genreIdEmit: string) => {
+const getMovies = async(genreIdEmit: string = '', search: boolean = false) => {
   try {
     isLoading.value = true
     currentPage.value = 1
     genreId.value = genreIdEmit
+    searchMode.value = search
 
-    const response: any = await moviesService.fetchAllMovies(currentPage.value, genreIdEmit)
+    const response: any = searchMode.value 
+      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value) 
+      : await moviesService.fetchAllMovies(currentPage.value, genreIdEmit)
+    
     listMoviesByGenre.value = response.data.results
   } catch (error) {
     console.error(error)
@@ -33,7 +39,10 @@ const loadMoreMovies = async() => {
     isLoading.value = true
     currentPage.value++
 
-    const response: any = await moviesService.fetchAllMovies(currentPage.value)
+    const response: any = searchMode.value 
+      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
+      : await moviesService.fetchAllMovies(currentPage.value)
+
     listMoviesByGenre.value = [...listMoviesByGenre.value, ...response.data.results]
   } catch (error) {
     console.error(error)
@@ -52,7 +61,16 @@ onMounted(async () => {
 <template>
     <div v-loading=isLoading class="list-page">
       <BaseTabsMovie @change-tab="getMovies">
-        <div class="flex justify-center	">
+          <v-text-field
+            v-model="searchName"
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            hide-details
+            single-line
+            @keyup.enter="getMovies('', true)"
+          />
+        <div class="flex justify-center">
           <div class="flex flex-col md:grid grid-cols-4 gap-4 mb-10 mt-5">
             <BaseCardMovie 
               v-for="(movie, index) in listMoviesByGenre" 
