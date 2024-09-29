@@ -17,6 +17,8 @@ import './assets/style.css'
 import 'tailwindcss/tailwind.css'
 import 'element-plus/dist/index.css'
 
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
+
 const vuetify = createVuetify({
   components,
   directives,
@@ -24,7 +26,7 @@ const vuetify = createVuetify({
 
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(createPinia().use(piniaPluginPersistedState))
 app.use(router)
 app.use(vuetify)
 app.use(ElLoading)

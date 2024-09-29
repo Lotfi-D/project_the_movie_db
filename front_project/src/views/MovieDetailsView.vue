@@ -38,15 +38,19 @@
         </p>
       </v-col>
     </v-row>
+    <div class="mt-10">
+      <BaseCommentariesMovie :movie-id="movieId" /> 
+    </div>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { moviesService } from '@/services'
-import type { TMovie } from '@/types/movies';
+import type { TMovie, TCast } from '@/types/movies';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
+import BaseCommentariesMovie from '../components/BaseCommentariesMovie.vue'
 
 const route = useRoute();
 
@@ -76,13 +80,13 @@ const getMovieInformations = async () => {
 }
 
 const getDirectorsMovie = () => {
-  const directors = movie?.value?.credits?.cast.filter((cast: any) => cast.known_for_department === 'Directing')
-  
+  const directors = movie?.value?.credits?.cast.filter((cast: TCast) => cast.known_for_department === 'Directing')
+
   return directors?.map((director: any) => director.name)
 }
 
 const getActorsMovie = () => {
-  const actors = movie?.value?.credits?.cast.filter((cast: any) => cast.known_for_department === 'Acting')
+  const actors = movie?.value?.credits?.cast.filter((cast: TCast) => cast.known_for_department === 'Acting')
 
   // we want to display most popular actors, they are the first actors in the list so we limited to 5 with the slice
   return actors?.slice(0, 5).map((actor: any) => actor.name)

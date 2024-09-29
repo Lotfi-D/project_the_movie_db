@@ -16,7 +16,7 @@ type TMovie = {
 
 type = TCreditsMovie = {
   cast: Array,
-  crew: Array,
+  crew: TCast,
   id: number
 }
 
@@ -29,6 +29,21 @@ type TBackDropResponse = {
 type TGenre = {
   id: number | string,
   name: string
-} 
+}
 
-export { TMovie, TBackDropResponse, TGenre }
+type TCast = {
+  adult: boolean;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  order: number;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null;
+};
+
+export { TMovie, TBackDropResponse, TGenre, TCast }
