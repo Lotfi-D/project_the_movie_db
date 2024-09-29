@@ -20,7 +20,7 @@ This project is a Vue.js-based movie dashboard with multiple pages and features.
 ## Environment Configuration
 
 3. Create a `.env` file at the root of the project with the following content:
-`VUE_APP_API_KEY=yourApiKey`
+`VITE_APP_API_KEY=yourApiKey`
 Replace `yourApiKey` with your actual API key from The Movie Database.
 
 ## Running the Project
@@ -46,7 +46,7 @@ Explore the different pages and features of the dashboard:
 
 - List of movies is displayed.
 - Filter movies by categories.
-- You can search a movie with the searchbar.
+- Search a movie with the searchbar.
 
 ### 3. Details Movie Page
 
