@@ -9,9 +9,9 @@ type TMovie = {
   vote_average: number | null,
   genre_ids?: Array,
   display_hero_banner?: string,
-  credits: TCreditsMovie,
-  genres: Array,
-  vote_count: number
+  credits?: TCreditsMovie,
+  genres?: Array,
+  vote_count?: number
 }
 
 type = TCreditsMovie = {
@@ -46,4 +46,10 @@ type TCast = {
   profile_path: string | null;
 };
 
-export { TMovie, TBackDropResponse, TGenre, TCast }
+type TBackDropResponse = {
+  iso_639_1: string,
+  width: number,
+  height: number,
+}
+
+export { TMovie, TBackDropResponse, TGenre, TCast, TBackDropResponse }

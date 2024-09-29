@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { ElInput } from 'element-plus'
 import { useFavoritesStore } from '@/stores/favorites'
 import BaseCardMovie from '@/components/BaseCardMovie.vue'
 import type { TMovie } from '@/types/movies'
@@ -41,12 +40,6 @@ const reload = () => {
           class="max-w-[240px]"
           placeholder="Search"
         />
-          <!-- <v-text-field label="Another input"></v-text-field> -->
-        <!-- <ElInput
-          v-model="filteredValue"
-          class="max-w-[240px]"
-          placeholder="Search"
-        /> -->
       </div>
       <div class="flex justify-center">
         <div v-if="favortesMoviesFiltered.length > 0" class="flex flex-col md:grid grid-cols-4 gap-4  gap-4 items-center mt-5 mb-16">

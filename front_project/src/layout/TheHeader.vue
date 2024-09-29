@@ -9,6 +9,7 @@
         />
       </router-link>
       <nav class="ml-5 space-x-4 text-lg">
+        <router-link to="/listmovies" class="text-white">List</router-link>
         <router-link to="/favorites" class="text-white">Favorites</router-link>
       </nav>
     </div>

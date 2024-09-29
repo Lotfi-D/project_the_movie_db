@@ -1,124 +1,103 @@
-<script setup lang="ts">
-import { onMounted , ref} from 'vue';
+<script lang="ts" setup>
+import { onMounted, ref, reactive } from 'vue'
+import BaseCardMovie from '@/components/BaseCardMovie.vue'
+import BaseHeroBannerMovie from '@/components/BaseHeroBannerMovie.vue'
 import { moviesService } from '@/services'
-import type { TMovie } from '@/types/movies';
+import type { TMovie, TBackDropResponse } from '@/types/movies'
 import { ElNotification } from 'element-plus'
+import { idHeroBannerMovie } from '@/enum.json' 
 
-import BaseCardMovie from '../components/BaseCardMovie.vue'
-import BaseTabsMovie from '../components/BaseTabsMovie.vue'
-
-const genreId = ref<string>('')
-const searchName = ref<string>('')
-const searchMode = ref<boolean>(false)
-const listMoviesByGenre = ref<TMovie[]>([])
+const moviesDisplayed = ref<TMovie[]>([])
+let movieHeroBanner = reactive<TMovie>({
+  id: null,
+  title: '',
+  overview: '',
+  poster_path: '',
+  backdrop_path: '',
+  release_date: '',
+  popularity: null,
+  vote_average: null,
+  display_hero_banner: '',
+})
 const isLoading = ref<boolean>(false)
-const currentPage = ref<number>(1)
 
-const getMovies = async(genreIdEmit: string = '', search: boolean = false) => {
+onMounted(async () => {
+  await getTrendMovies()
+  await getHeroBannerMovie()
+})
+
+const getTrendMovies = async() => {
   try {
     isLoading.value = true
-    currentPage.value = 1
-    genreId.value = genreIdEmit
-    searchMode.value = search
-
-    const response: any = searchMode.value 
-      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
-      : await moviesService.fetchAllMovies(currentPage.value, genreIdEmit)
-    
-    listMoviesByGenre.value = response.data.results
+    const response: any = await moviesService.fetchTrendMovies()
+    for (let i = 0; i < 4; i++) {
+      checkAndAddMovies(response.data.results)
+    }
   } catch (error) {
     console.error(error)
     ElNotification({ title: 'Error', message: 'An error occured', type: 'error', duration: 5000, })
   } finally {
-    setTimeout(() => { isLoading.value = false }, 500)
+    setTimeout(() => isLoading.value = false, 500)
   }
 }
 
-const loadMoreMovies = async() => {
+//This function will help to select 4 trending movies to display randomly
+//we want a number between 0 and 19 (include) to select the movies among the first page of the response API
+const getRandomNumber = (max = 20) => Math.floor(Math.random() * max)
+
+//the function generates a random index to display randomly a movie from the response API and it also checks
+//if the movie is already displayed, in this case we relaunch the function to avoid displaying the same movie
+const checkAndAddMovies = (listMovies: TMovie[]) => {
+  const index = getRandomNumber()
+  const moviesDisplayedId = moviesDisplayed.value.map((movie: TMovie) => movie.id)
+  if (!moviesDisplayedId.includes(listMovies[index].id)) {
+    moviesDisplayed.value.push(listMovies[index])
+  } else {
+    checkAndAddMovies(listMovies)
+  }
+}
+
+const getHeroBannerMovie = async() => {
   try {
-    isLoading.value = true
-    currentPage.value++
-
-    const response: any = searchMode.value 
-      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
-      : await moviesService.fetchAllMovies(currentPage.value)
-
-    listMoviesByGenre.value = [...listMoviesByGenre.value, ...response.data.results]
+    const response: any = await moviesService.fetchMovieById(idHeroBannerMovie)
+    movieHeroBanner = response.data
+    getImageHeroBanner(idHeroBannerMovie)
   } catch (error) {
     console.error(error)
     ElNotification({ title: 'Error', message: 'An error occured', type: 'error', duration: 5000, })
-  } 
-  finally {
-    setTimeout(() => { isLoading.value = false }, 500)
   }
 }
 
-onMounted(async () => {
-  await getMovies('')
-})
+const getImageHeroBanner = async(movieId: number) => {
+  try {
+    const response: any = await moviesService.fetchImageHeroBanner(movieId)
+    //we get all backdrops and we filter by iso 'en' and the 'height' 1080
+    //After that we choose randomly what backdrop to display
+    const filterResponseByLanguage = response.data.backdrops.filter((backdrop: TBackDropResponse) => (
+      backdrop.iso_639_1 === 'en' && backdrop.height === 1080
+    ))
+    const indexBackDrop = getRandomNumber(filterResponseByLanguage.length)
+    movieHeroBanner.display_hero_banner = filterResponseByLanguage[indexBackDrop].file_path
+  } catch (error) {
+    console.error(error)
+    ElNotification({ title: 'Error', message: 'An error occured', type: 'error', duration: 5000, })
+  }
+}
 </script>
 
 <template>
-  <div v-loading=isLoading class="list-page">
-    <BaseTabsMovie @change-tab="getMovies">
-      <v-text-field
-        v-show="genreId === ''"
-        v-model="searchName"
-        class="w-[1248px]"
-        label="Search"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        hide-details
-        single-line
-        @keyup.enter="getMovies('', true)"
-      />
-      
-      <div v-if="listMoviesByGenre.length > 0" class="flex justify-center min-w-[1248px]">
-        <div class="flex md:grid grid-cols-4 gap-4 mb-10 mt-5">
-          <BaseCardMovie 
-            v-for="(movie, index) in listMoviesByGenre" 
-            :key="index"
-            :movie-info="movie"
-            :class-props="'w-[280px] md:w-[300px]'"
-          />
-        </div>
+  <div v-loading="isLoading" class="home-page">
+    <BaseHeroBannerMovie :movie-hero-banner-info="movieHeroBanner" />
+    <div class="container mx-auto mt-6">
+      <h2 class="text-2xl font-semibold">Trending</h2>
+      <div class="flex flex-col md:flex-row md:items-start justify-center gap-4 items-center mt-5 mb-16">
+        <BaseCardMovie 
+          v-for="(movie, index) in moviesDisplayed"
+          :key="index"
+          :movie-info="movie"
+          :class-props="'w-[280px] md:w-[320px]'"
+        />
       </div>
-      <div v-else class="flex h-[300px] justify-center items-center text-xl">
-        No favorite found
-      </div>
-
-    </BaseTabsMovie>
-    <div class="flex justify-center">
-      <button
-        class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-2xl w-[50%] mb-5"
-        @click="loadMoreMovies"
-      >
-        Load more
-      </button>
     </div>
   </div>
 </template>
-
-<style lang="scss">
-.list-page {
-  .el-tabs {
-    --el-tabs-header-height: 60px;
-    .el-tabs__nav-scroll {
-      display: flex;
-      justify-content: center;
-    }
-    .el-tabs__active-bar {
-      background-color: red;
-    }
-    .el-tabs__item {
-      font-size: 18px;
-      &.is-active {
-        color: red;
-      }
-      &:hover {
-        color: red;
-      }
-    }
-  }
-}
-</style>

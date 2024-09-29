@@ -18,4 +18,12 @@ export default {
   fetchMovieCredit(movieId: number): Promise<AxiosResponse | AxiosError>  {
     return axios.get(`${config.api.baseUrl}/movie/${movieId}/credits?api_key=${config.api.apiKey}`)
   },
+
+  fetchTrendMovies(): Promise<AxiosResponse | AxiosError> {
+    return axios.get<AxiosResponse>(`${config.api.baseUrl}/trending/movie/day?language=en-US&api_key=${config.api.apiKey}`)
+  },
+
+  fetchImageHeroBanner(movieId: number): Promise<AxiosResponse | AxiosError>  {
+    return axios.get(`${config.api.baseUrl}/movie/${movieId}/images?api_key=${config.api.apiKey}`)
+  },
 }
