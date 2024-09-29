@@ -8,7 +8,16 @@ type TMovie = {
   popularity: number | null,
   vote_average: number | null,
   genre_ids?: Array,
-  display_hero_banner?: string
+  display_hero_banner?: string,
+  credits: TCreditsMovie,
+  genres: Array,
+  vote_count: number
+}
+
+type = TCreditsMovie = {
+  cast: Array,
+  crew: Array,
+  id: number
 }
 
 type TBackDropResponse = {

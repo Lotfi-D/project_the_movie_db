@@ -22,7 +22,7 @@ const getMovies = async(genreIdEmit: string = '', search: boolean = false) => {
     searchMode.value = search
 
     const response: any = searchMode.value 
-      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value) 
+      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
       : await moviesService.fetchAllMovies(currentPage.value, genreIdEmit)
     
     listMoviesByGenre.value = response.data.results

@@ -1,13 +1,3 @@
-<template>
-  <ElTabs v-model="activeTab" @tab-click="handleClick">
-    <div class="flex justify-center">
-      <ElTabPane v-for="(tab, index) in tabsInfo" :key="index" :label="tab.name" :name="tab.id">
-        <slot />
-      </ElTabPane>
-    </div>
-  </ElTabs>
-</template>
-
 <script lang="ts" setup>
 import { ref, onMounted, defineEmits } from 'vue'
 import { ElTabs, ElTabPane } from 'element-plus'
@@ -29,3 +19,13 @@ const handleClick = (tab: TabsPaneContext) => {
   emit('changeTab', tab.paneName?.toString())
 }
 </script>
+
+<template>
+  <ElTabs v-model="activeTab" @tab-click="handleClick">
+    <div class="flex justify-center">
+      <ElTabPane v-for="(tab, index) in tabsInfo" :key="index" :label="tab.name" :name="tab.id">
+        <slot />
+      </ElTabPane>
+    </div>
+  </ElTabs>
+</template>
