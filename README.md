@@ -46,7 +46,7 @@ Explore the different pages and features of the dashboard:
 
 - List of movies is displayed.
 - Filter movies by categories.
-- You can search a movie with the searchbar.
+- Search a movie with the searchbar.
 
 ### 3. Details Movie Page
 
