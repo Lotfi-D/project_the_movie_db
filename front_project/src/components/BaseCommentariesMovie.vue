@@ -1,64 +1,3 @@
-<template>
-  <form>
-    <v-row class="user-info">
-      <v-text-field
-        v-model="state.username"
-        :counter="50"
-        :error-messages="v$.username.$errors.map(e => e.$message)"
-        label="Username"
-        required
-        @blur="v$.username.$touch"
-        @input="v$.username.$touch"
-      />
-
-      <v-select
-        v-model="state.score"
-        :items="score"
-        label="Your score"
-        class="ml-5"
-      />
-    </v-row>
-    <v-textarea 
-      v-model="state.content" 
-      :error-messages="v$.content.$errors.map(e => e.$message )"
-      :counter="500"
-      label="Your commentary" 
-      required 
-      @blur="v$.content.$touch"
-      @input="v$.content.$touch"
-    />
-
-    <v-btn
-      class="me-4"
-      @click="submit"
-    >
-      submit
-    </v-btn>
-    <v-btn @click="clear">
-      clear
-    </v-btn>
-  </form>
-  <v-card class="mt-10">
-    <v-card-text v-loading="isLoading">
-      <v-timeline align="start" density="compact">
-        <v-timeline-item
-          v-for="(commentary, index) in movieCommentariesSorted"
-          :key="index"
-          size="x-small"
-        >
-          <div class="mb-4">
-            <div class="text-base">
-              <strong>{{ commentary.username }}</strong> @{{ commentary.publication_date }}
-            </div>
-
-            <div class="text-lg">{{ commentary.content }}</div>
-          </div>
-        </v-timeline-item>
-      </v-timeline>
-    </v-card-text>
-  </v-card>
-</template>
-
 <script lang="ts" setup>
 import { reactive, ref, computed } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
@@ -143,6 +82,67 @@ const clear = () => {
   state.movie_id = props.movieId
 }
 </script>
+
+<template>
+  <form>
+    <v-row class="user-info">
+      <v-text-field
+        v-model="state.username"
+        :counter="50"
+        :error-messages="v$.username.$errors.map(e => e.$message)"
+        label="Username"
+        required
+        @blur="v$.username.$touch"
+        @input="v$.username.$touch"
+      />
+
+      <v-select
+        v-model="state.score"
+        :items="score"
+        label="Your score"
+        class="ml-5"
+      />
+    </v-row>
+    <v-textarea 
+      v-model="state.content" 
+      :error-messages="v$.content.$errors.map(e => e.$message )"
+      :counter="500"
+      label="Your commentary" 
+      required 
+      @blur="v$.content.$touch"
+      @input="v$.content.$touch"
+    />
+
+    <v-btn
+      class="me-4"
+      @click="submit"
+    >
+      submit
+    </v-btn>
+    <v-btn @click="clear">
+      clear
+    </v-btn>
+  </form>
+  <v-card class="mt-10">
+    <v-card-text v-loading="isLoading">
+      <v-timeline align="start" density="compact">
+        <v-timeline-item
+          v-for="(commentary, index) in movieCommentariesSorted"
+          :key="index"
+          size="x-small"
+        >
+          <div class="mb-4">
+            <div class="text-base">
+              <strong>{{ commentary.username }}</strong> @{{ commentary.publication_date }}
+            </div>
+
+            <div class="text-lg">{{ commentary.content }}</div>
+          </div>
+        </v-timeline-item>
+      </v-timeline>
+    </v-card-text>
+  </v-card>
+</template>
 
 <style scoped>
  .user-info {

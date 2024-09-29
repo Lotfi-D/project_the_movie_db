@@ -59,29 +59,35 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-loading=isLoading class="list-page">
-      <BaseTabsMovie @change-tab="getMovies">
-        <v-text-field
-          v-if="genreId === ''"
-          v-model="searchName"
-          label="Search"
-          prepend-inner-icon="mdi-magnify"
-          variant="outlined"
-          hide-details
-          single-line
-          @keyup.enter="getMovies('', true)"
-        />
-        <div class="flex justify-center min-w-[1248px]">
-          <div class="flex md:grid grid-cols-4 gap-4 mb-10 mt-5">
-            <BaseCardMovie 
-              v-for="(movie, index) in listMoviesByGenre" 
-              :key="index"
-              :movie-info="movie"
-              :class-props="'w-[280px] md:w-[300px]'"
-            />
-          </div>
+  <div v-loading=isLoading class="list-page">
+    <BaseTabsMovie @change-tab="getMovies">
+      <v-text-field
+        v-show="genreId === ''"
+        v-model="searchName"
+        class="w-[1248px]"
+        label="Search"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        hide-details
+        single-line
+        @keyup.enter="getMovies('', true)"
+      />
+      
+      <div v-if="listMoviesByGenre.length > 0" class="flex justify-center min-w-[1248px]">
+        <div class="flex md:grid grid-cols-4 gap-4 mb-10 mt-5">
+          <BaseCardMovie 
+            v-for="(movie, index) in listMoviesByGenre" 
+            :key="index"
+            :movie-info="movie"
+            :class-props="'w-[280px] md:w-[300px]'"
+          />
         </div>
-      </BaseTabsMovie>
+      </div>
+      <div v-else class="flex h-[300px] justify-center items-center text-xl">
+        No favorite found
+      </div>
+
+    </BaseTabsMovie>
     <div class="flex justify-center">
       <button
         class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-2xl w-[50%] mb-5"
