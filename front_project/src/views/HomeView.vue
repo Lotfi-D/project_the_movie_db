@@ -61,17 +61,18 @@ onMounted(async () => {
 <template>
     <div v-loading=isLoading class="list-page">
       <BaseTabsMovie @change-tab="getMovies">
-          <v-text-field
-            v-model="searchName"
-            label="Search"
-            prepend-inner-icon="mdi-magnify"
-            variant="outlined"
-            hide-details
-            single-line
-            @keyup.enter="getMovies('', true)"
-          />
-        <div class="flex justify-center">
-          <div class="flex flex-col md:grid grid-cols-4 gap-4 mb-10 mt-5">
+        <v-text-field
+          v-if="genreId === ''"
+          v-model="searchName"
+          label="Search"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          hide-details
+          single-line
+          @keyup.enter="getMovies('', true)"
+        />
+        <div class="flex justify-center min-w-[1248px]">
+          <div class="flex md:grid grid-cols-4 gap-4 mb-10 mt-5">
             <BaseCardMovie 
               v-for="(movie, index) in listMoviesByGenre" 
               :key="index"
