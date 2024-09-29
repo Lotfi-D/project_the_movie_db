@@ -1,49 +1,3 @@
-<template>
-  <v-container class="my-20">
-    <v-row class="justify-center">
-      <v-col cols="12" md="3">
-        <v-img :src="displayPoster" alt="movie.title" max-width="" class="rounded-lg" />
-      </v-col>
-
-      <v-col cols="12" md="8">
-        <h1 class="text-4xl mb-4">{{ movie?.title }}</h1>
-        <v-chip-group column>
-          <v-chip v-for="genre in movie?.genres" :key="genre.id" class="mb-3">
-            {{ genre.name }}
-          </v-chip>
-        </v-chip-group>
-        <p class="mb-2 text-lg"><strong>Release Date:</strong> {{ releaseDateFormated }}</p>
-        <p class="mb-2 text-lg"><strong>Rating:</strong> {{ ratingFormated }} / 10</p>
-        <p class="mb-2 text-lg"><strong>Vote count:</strong> {{ movie?.vote_count }}</p>
-        <p class="mb-2 text-lg"><strong>Overview:</strong> {{ movie?.overview }}</p>
-        <p class="mb-2 text-lg">
-          <strong>Directors: </strong>
-          <span 
-            v-for="(director, index) in getDirectorsMovie()"
-            :key="index"
-            class="ml-2"
-          >
-            {{ director }}
-          </span>
-        </p>
-        <p class="mb-2 text-lg">
-          <strong>Actors: </strong>
-          <span 
-            v-for="(actor, index) in getActorsMovie()"
-            :key="index"
-            class="ml-2"
-          >
-            {{ actor }}
-          </span>
-        </p>
-      </v-col>
-    </v-row>
-    <div class="mt-10">
-      <BaseCommentariesMovie :movie-id="movieId" /> 
-    </div>
-  </v-container>
-</template>
-
 <script setup lang="ts">
 import { moviesService } from '@/services'
 import type { TMovie, TCast } from '@/types/movies';
@@ -96,3 +50,49 @@ onMounted(async () => {
   await getMovieInformations()
 })
 </script>
+
+<template>
+  <v-container class="my-20">
+    <v-row class="justify-center">
+      <v-col cols="12" md="3">
+        <v-img :src="displayPoster" alt="movie.title" max-width="" class="rounded-lg" />
+      </v-col>
+
+      <v-col cols="12" md="8">
+        <h1 class="text-4xl mb-4">{{ movie?.title }}</h1>
+        <v-chip-group column>
+          <v-chip v-for="genre in movie?.genres" :key="genre.id" class="mb-3">
+            {{ genre.name }}
+          </v-chip>
+        </v-chip-group>
+        <p class="mb-2 text-lg"><strong>Release Date:</strong> {{ releaseDateFormated }}</p>
+        <p class="mb-2 text-lg"><strong>Rating:</strong> {{ ratingFormated }} / 10</p>
+        <p class="mb-2 text-lg"><strong>Vote count:</strong> {{ movie?.vote_count }}</p>
+        <p class="mb-2 text-lg"><strong>Overview:</strong> {{ movie?.overview }}</p>
+        <p class="mb-2 text-lg">
+          <strong>Directors: </strong>
+          <span 
+            v-for="(director, index) in getDirectorsMovie()"
+            :key="index"
+            class="ml-2"
+          >
+            {{ director }}
+          </span>
+        </p>
+        <p class="mb-2 text-lg">
+          <strong>Actors: </strong>
+          <span 
+            v-for="(actor, index) in getActorsMovie()"
+            :key="index"
+            class="ml-2"
+          >
+            {{ actor }}
+          </span>
+        </p>
+      </v-col>
+    </v-row>
+    <div class="mt-10">
+      <BaseCommentariesMovie :movie-id="movieId" /> 
+    </div>
+  </v-container>
+</template>

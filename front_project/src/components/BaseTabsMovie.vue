@@ -15,7 +15,6 @@ onMounted(() => {
 })
 
 const handleClick = (tab: TabsPaneContext) => {
-  console.log('TAB', tab.paneName?.toString())
   emit('changeTab', tab.paneName?.toString())
 }
 </script>
