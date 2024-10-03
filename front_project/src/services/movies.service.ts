@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { AxiosResponse, AxiosError } from 'axios';
 
 export default {
-  fetchAllMovies(currentPage: number, genreId: string = ''): Promise<AxiosResponse | AxiosError> {
+  fetchAllMoviesByGenre(currentPage: number, genreId: string = ''): Promise<AxiosResponse | AxiosError> {
     return axios.get(`${config.api.baseUrl}/discover/movie?page=${currentPage}&with_genres=${genreId}&api_key=${config.api.apiKey}`)
   },
 
