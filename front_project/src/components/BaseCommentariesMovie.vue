@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, watch } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required, maxLength, minLength, alpha } from '@vuelidate/validators'
 import { alphaNumWithSpaces } from '@/helpers/validationHelpers';
@@ -20,12 +20,18 @@ interface IProps {
 const props = defineProps<IProps>()
 
 const isLoading = ref<boolean>(false)
+const isDisabled = ref<boolean>(true)
 
 const state = reactive<TCommentary>({
   username: '',
   score: null,
   content: '',
 })
+
+watch(() => state, async () => {
+  const resValidate = await validation()
+  isDisabled.value = !resValidate
+}, { deep: true })
 
 const score = computed(() => (Array.from({ length: 11 }, (_, i) => i)))
 
@@ -54,14 +60,19 @@ const rules = {
 
 const v$ = useVuelidate(rules, state)
 
-const submit = async () => {
-  const validation = await v$.value.$validate()
+const validation = async () => {
+  const isValid = await v$.value.$validate()
+  return isValid
+}
 
-  if (validation) {
+const submit = async () => {
+  const res = await validation()
+
+  if (res) {
     isLoading.value = true
     const commentaryToAdd = {
       ...state,
-      publication_date: dayjs().format('ddd DD MMM YYYY HH:mm'),
+      publication_date: dayjs().format('ddd DD MMM YYYY HH:mm:ss'),
       movie_id: props.movieId,
     }
 
@@ -78,7 +89,7 @@ const clear = () => {
   state.username = ''
   state.score = null,
   state.content = '',
-  state.publication_date = dayjs().format('ddd DD MMM YYYY HH:mm'),
+  state.publication_date = '',
   state.movie_id = props.movieId
 }
 </script>
@@ -89,11 +100,11 @@ const clear = () => {
       <v-text-field
         v-model="state.username"
         :counter="50"
-        :error-messages="v$.username.$errors.map(e => e.$message)"
+        :error-messages="v$.username.$errors.map(e => e.$message.toString())"
         label="Username"
         required
         @blur="v$.username.$touch"
-        @input="v$.username.$touch"
+        @input="v$.username.$touch; validation()"
       />
 
       <v-select
@@ -105,15 +116,16 @@ const clear = () => {
     </v-row>
     <v-textarea 
       v-model="state.content" 
-      :error-messages="v$.content.$errors.map(e => e.$message )"
+      :error-messages="v$.content.$errors.map(e => e.$message.toString())"
       :counter="500"
       label="Your commentary" 
       required 
       @blur="v$.content.$touch"
-      @input="v$.content.$touch"
+      @input="v$.content.$touch; validation()"
     />
 
     <v-btn
+      :disabled="isDisabled"
       class="me-4"
       @click="submit"
     >

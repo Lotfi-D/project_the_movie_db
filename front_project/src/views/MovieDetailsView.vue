@@ -18,7 +18,9 @@ const displayPoster = computed(() =>
 const releaseDateFormated = computed(() => dayjs(movie?.value?.release_date).format('dddd MMMM YYYY'))
 
 const ratingFormated = computed(() => {
-  if (movie?.value?.vote_average) return Math.round(movie?.value?.vote_average * 10) / 10
+  if (movie?.value?.vote_average) {
+    return Math.round(movie?.value?.vote_average * 10) / 10
+  }
   return ''
 })
 

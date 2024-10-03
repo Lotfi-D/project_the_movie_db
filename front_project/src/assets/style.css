@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .el-loading-spinner {
-  position: sticky;
+  position: sticky !important;
 }
 .el-loading-spinner .path {
   stroke: red !important;

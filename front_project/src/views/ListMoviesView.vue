@@ -14,44 +14,44 @@ const listMoviesByGenre = ref<TMovie[]>([])
 const isLoading = ref<boolean>(false)
 const currentPage = ref<number>(1)
 
-const getMovies = async(genreIdEmit: string = '', search: boolean = false) => {
+const getMovies = async(genreIdEmit: string = '', search: boolean = false, loadMoreMovies: boolean = false) => {
   try {
     isLoading.value = true
-    currentPage.value = 1
+    currentPage.value = loadMoreMovies ? (currentPage.value + 1) : 1
     genreId.value = genreIdEmit
     searchMode.value = search
 
     const response: any = searchMode.value 
       ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
-      : await moviesService.fetchAllMovies(currentPage.value, genreIdEmit)
+      : await moviesService.fetchAllMoviesByGenre(currentPage.value, genreIdEmit)
     
-    listMoviesByGenre.value = response.data.results
+    listMoviesByGenre.value = loadMoreMovies ? [...listMoviesByGenre.value, ...response.data.results] : response.data.results 
   } catch (error) {
     console.error(error)
     ElNotification({ title: 'Error', message: 'An error occured', type: 'error', duration: 5000, })
   } finally {
-    setTimeout(() => { isLoading.value = false }, 500)
+    setTimeout(() => { isLoading.value = false }, 800)
   }
 }
 
-const loadMoreMovies = async() => {
-  try {
-    isLoading.value = true
-    currentPage.value++
+// const loadMoreMovies = async() => {
+//   try {
+//     isLoading.value = true
+//     currentPage.value++
 
-    const response: any = searchMode.value 
-      ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
-      : await moviesService.fetchAllMovies(currentPage.value)
+//     const response: any = searchMode.value 
+//       ? await moviesService.fetchMovieByName(currentPage.value, searchName.value)
+//       : await moviesService.fetchAllMoviesByGenre(currentPage.value, genreId.value)
 
-    listMoviesByGenre.value = [...listMoviesByGenre.value, ...response.data.results]
-  } catch (error) {
-    console.error(error)
-    ElNotification({ title: 'Error', message: 'An error occured', type: 'error', duration: 5000, })
-  } 
-  finally {
-    setTimeout(() => { isLoading.value = false }, 500)
-  }
-}
+//     listMoviesByGenre.value = [...listMoviesByGenre.value, ...response.data.results]
+//   } catch (error) {
+//     console.error(error)
+//     ElNotification({ title: 'Error', message: 'An error occured', type: 'error', duration: 5000, })
+//   } 
+//   finally {
+//     setTimeout(() => { isLoading.value = false }, 800)
+//   }
+// }
 
 onMounted(async () => {
   await getMovies('')
@@ -84,14 +84,14 @@ onMounted(async () => {
         </div>
       </div>
       <div v-else class="flex h-[300px] justify-center items-center text-xl">
-        No favorite found
+        No movies found
       </div>
 
     </BaseTabsMovie>
     <div class="flex justify-center">
       <button
         class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-2xl w-[50%] mb-5"
-        @click="loadMoreMovies"
+        @click="getMovies(genreId, searchMode, true)"
       >
         Load more
       </button>

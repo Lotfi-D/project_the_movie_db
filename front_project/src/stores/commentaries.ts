@@ -7,7 +7,7 @@ export const useCommentariesStore = defineStore('commentary', () => {
    
   const listCommentaries = computed(() => commentaries.value)
 
-  function addCommentary(commentary: TCommentary) {
+  const addCommentary = (commentary: TCommentary) => {
     commentaries.value.push(commentary)
   }
 
